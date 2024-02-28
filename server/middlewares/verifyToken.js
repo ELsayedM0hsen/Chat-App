@@ -1,11 +1,12 @@
 import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 
-const verifyToken = async (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
   const token = req.cookies.access_token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
+  }
   try {
-    if (!token) {
-      return res.status(401).json({ error: "Unauthorized: No token provided" });
-    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded?.id);
     if (!user) return res.status(401).json("user not found");
@@ -15,5 +16,3 @@ const verifyToken = async (req, res, next) => {
     next("Not Authorized token expired, Please Login again");
   }
 };
-
-export default verifyToken;
