@@ -5,11 +5,15 @@ import genToken from "../utils/generateToken.js";
 
 export const register = async (req, res, next) => {
   try {
-    const { username, email, gender, password } = req.body;
+    const { username, email, gender, password, confirmPassword } = req.body;
 
-    const foundUser = await User.findOne({ username });
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: "Passwords don't match" });
+    }
+
+    const foundUser = await User.findOne({ email });
     if (foundUser) {
-      return res.status(400).json({ message: "Username Already Exists" });
+      return res.status(400).json({ error: "Username Already Exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,7 +29,21 @@ export const register = async (req, res, next) => {
       gender,
       profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
     });
-    res.status(200).json(newUser);
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+
+    res.cookie("access_token", token, {
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    res.status(200).json({
+      _id: newUser._id,
+      username: newUser.username,
+      email:newUser.email,
+      profilePic: newUser.profilePic,
+      token: token,
+    });
   } catch (error) {
     next();
   }
@@ -35,11 +53,11 @@ export const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json("Oops! User Doesn't Existed.you can signup ");
+      return res.status(401).json({error:"Oops! User Doesn't Existed.you can signup "});
     }
     const correctPassword = await bcrypt.compare(password, user.password);
     if (!correctPassword) {
-      return res.status(401).json("Oops! Password Doesn't Correct ");
+      return res.status(401).json({error:"Oops! Password Doesn't Correct "});
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
@@ -48,10 +66,11 @@ export const login = async (req, res, next) => {
       httpOnly: true,
       sameSite: "strict",
     });
-    
+
     res.status(200).json({
       _id: user._id,
       username: user.username,
+      email:user.email,
       profilePic: user.profilePic,
       token: token,
     });

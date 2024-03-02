@@ -2,10 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background:url("../public/370679-PBP86J-209.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+body {
+  background: url("../public/370679-PBP86J-209.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+::-webkit-scrollbar {
+  cursor: pointer;
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  cursor: pointer;
+  background: #f8fceb;
+}
+::-webkit-scrollbar-thumb {
+  background: #f6f7d3;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #495664;
 }
