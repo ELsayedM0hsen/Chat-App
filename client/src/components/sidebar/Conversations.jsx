@@ -1,13 +1,21 @@
 import React from "react";
 import Conversation from "./Conversation";
+import useGetConversations from "../../hooks/useGetConversations";
+import { randomEmoji } from "../../utils/emojis";
 
 const Conversations = () => {
-
+  const { loading, conversations } = useGetConversations();
   return (
     <div className="py-2 flex flex-col overflow-auto">
-      <Conversation />
-      <Conversation />
-      <Conversation />
+      {conversations.map((conversation, index) => (
+        <Conversation
+          key={conversation._id}
+          conversation={conversation}
+          emoji={randomEmoji()}
+          lastIndex={index === conversations.length - 1}
+        />
+      ))}
+      {loading ? <span className="loading loading-spinner "></span> : null}
     </div>
   );
 };

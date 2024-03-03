@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  {  useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import useConversation from "./useConversation";
@@ -7,12 +7,12 @@ const useSendMessage = () => {
   const [loading, setLoading] = useState(false);
   const { messages, setMessages, selectedConversaion } = useConversation();
 
-  setLoading(true);
   const sendMessage = async (message) => {
+    setLoading(true);
     try {
       const res = await axios.post(
         `/api/messages/send/${selectedConversaion._id}`,
-        message
+        {message}
       );
       if (res.data.error) {
         throw new Error(res.data.error);
