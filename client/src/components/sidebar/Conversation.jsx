@@ -1,21 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import useConversation from "../../hooks/useConversation";
+import { SocketContext } from "../../context/SocketContext";
 
-const Conversation = ({conversation,lastIndex,emoji}) => {
- const {selectedConversaion,setSelectedConversaion} = useConversation()
- const isSelected = selectedConversaion?._id === conversation._id
+const Conversation = ({ conversation, lastIndex, emoji }) => {
+  const { selectedConversaion, setSelectedConversaion } = useConversation();
+  const isSelected = selectedConversaion?._id === conversation._id;
+  const { onlineUsers } = useContext(SocketContext);
+  const isOnline = onlineUsers.includes(conversation._id);
   return (
     <>
-      <div className={`flex gap-2 items-center hover:bg-blue-300 rounded p-2 py-1 cursor-pointer
+      <div
+        className={`flex gap-2 items-center hover:bg-blue-300 rounded p-2 py-1 cursor-pointer
       ${isSelected ? "bg-green-500" : ""}`}
-      onClick={()=>{setSelectedConversaion(conversation)}}
+        onClick={() => {
+          setSelectedConversaion(conversation);
+        }}
       >
-        <div className="avatar online">
+        <div className={`avatar ${isOnline ? "online" : ""}`}>
           <div className="w-12 rounded-full">
-            <img
-              src={conversation.profilePic}
-              alt="user avatar"
-            />
+            <img src={conversation.profilePic} alt="user avatar" />
           </div>
         </div>
         <div className="flex flex-col flex-1">

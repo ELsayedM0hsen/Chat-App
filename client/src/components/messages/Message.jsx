@@ -13,6 +13,7 @@ const Message = ({ message }) => {
     : selectedConversaion?.profilePic;
   const bubbleBgColor = fromMe ? "bg-blue-500" : "";
 
+  const shakeClass = message.shouldShake ? "shake" : ""
 
   function extractTime(dateString) {
     function padZero(number) {
@@ -32,7 +33,7 @@ const Message = ({ message }) => {
             <img alt="Tailwind CSS chat bubble component" src={profilePic} />
           </div>
         </div>
-        <div className={`chat-bubble ${bubbleBgColor} `}>{message.message}</div>
+        <div className={`chat-bubble ${bubbleBgColor} ${shakeClass} `}>{message.message}</div>
         <div className="chat-footer text-orange-900 opacity-50">{formattedTime}</div>
       </div>
     </div>
